@@ -1,6 +1,7 @@
 package io.javabrains.springsecurityjwt.controller;
 
 import io.javabrains.springsecurityjwt.dto.GetImagesDTO;
+import io.javabrains.springsecurityjwt.dto.RetornoDTO;
 import io.javabrains.springsecurityjwt.form.GetImagesForm;
 import io.javabrains.springsecurityjwt.form.SendImageForm;
 import io.javabrains.springsecurityjwt.model.ImageInformationModel;
@@ -63,7 +64,7 @@ public class ImageController {
                 new GetImagesDTO(value, user.getId())).collect(Collectors.toList());
 
 
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(new RetornoDTO(items));
     }
 
 }
