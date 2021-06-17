@@ -1,6 +1,7 @@
 package io.javabrains.springsecurityjwt.controller;
 
 import io.javabrains.springsecurityjwt.MyUserDetailsService;
+import io.javabrains.springsecurityjwt.dto.GetIdKeysDTO;
 import io.javabrains.springsecurityjwt.form.AuthenticationForm;
 import io.javabrains.springsecurityjwt.form.RegisterUserForm;
 import io.javabrains.springsecurityjwt.dto.AuthenticationDTO;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -55,11 +57,12 @@ class AuthController {
         return ResponseEntity.ok(new AuthenticationDTO(jwt));
     }
 
+
     @PostMapping("/register")
     private ResponseEntity<?> subscribeClient(@Valid @RequestBody RegisterUserForm form) {
 
         try {
-            Optional<UserGalleryModel> user = userRepository.findByUsername(form.getUsername());
+            Optional<UserGalleryModel> user = userRepository.findDistinctByUsername(form.getUsername());
             if (user.isPresent())
                 return ResponseEntity.badRequest().build();
 
@@ -71,6 +74,12 @@ class AuthController {
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/get_keys")
+    public ResponseEntity<?> GetAllPublicKeys() {
+        List<UserGalleryModel> usersData = userRepository.findAll();
+        return ResponseEntity.ok(new GetIdKeysDTO(usersData));
     }
 
 }

@@ -3,6 +3,7 @@ package io.javabrains.springsecurityjwt.form;
 import io.javabrains.springsecurityjwt.model.ImageInformationModel;
 import io.javabrains.springsecurityjwt.model.UserGalleryModel;
 import io.javabrains.springsecurityjwt.repository.UserRepository;
+import io.javabrains.springsecurityjwt.util.IdKey;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,14 +23,14 @@ public class SendImageForm {
 
     @NotEmpty
     @NotNull
-    private HashMap<String, String> aesKey;
+    private List<IdKey> aesKey;
 
 
-    public HashMap<String, String> getAesKey() {
+    public List<IdKey> getAesKey() {
         return aesKey;
     }
 
-    public void setAesKey(HashMap<String, String> aesKey) {
+    public void setAesKey(List<IdKey> aesKey) {
         this.aesKey = aesKey;
     }
 
@@ -54,6 +55,6 @@ public class SendImageForm {
     }
 
     public Optional<UserGalleryModel> convertToUserGalleryModel(UserRepository userRepository) {
-        return userRepository.findByUsername(username);
+        return userRepository.findDistinctByUsername(username);
     }
 }

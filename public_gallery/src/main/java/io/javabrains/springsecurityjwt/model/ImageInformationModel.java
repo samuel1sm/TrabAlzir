@@ -1,5 +1,6 @@
 package io.javabrains.springsecurityjwt.model;
 
+import io.javabrains.springsecurityjwt.util.IdKey;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,12 +15,12 @@ public class ImageInformationModel {
     private String userGalleryId;
     private String imageBinary;
     private Date creationDate;
-    private HashMap<String ,String> aesKeys;
+    private List<IdKey> aesKeys;
 
     public ImageInformationModel() {
     }
 
-    public ImageInformationModel(String imageBinary, String userGalleryId, HashMap<String ,String> aesKeys) {
+    public ImageInformationModel(String imageBinary, String userGalleryId, List<IdKey> aesKeys) {
         this.imageBinary = imageBinary;
         this.userGalleryId = userGalleryId;
         this.aesKeys = aesKeys;
@@ -34,7 +35,13 @@ public class ImageInformationModel {
         this.creationDate = creationDate;
     }
 
+    public List<IdKey> getAesKeys() {
+        return aesKeys;
+    }
 
+    public void setAesKeys(List<IdKey> aesKeys) {
+        this.aesKeys = aesKeys;
+    }
 
     public String getImageBinary() {
         return imageBinary;

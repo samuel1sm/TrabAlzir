@@ -1,6 +1,6 @@
 package io.javabrains.springsecurityjwt.controller;
 
-import io.javabrains.springsecurityjwt.dto.PublicKeysIdDTO;
+import io.javabrains.springsecurityjwt.form.GetImagesForm;
 import io.javabrains.springsecurityjwt.form.SendImageForm;
 import io.javabrains.springsecurityjwt.model.ImageInformationModel;
 import io.javabrains.springsecurityjwt.model.UserGalleryModel;
@@ -9,14 +9,13 @@ import io.javabrains.springsecurityjwt.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ public class ImageController {
 
     @Transactional
     @PostMapping("/send_image")
-    public ResponseEntity<?> GetImage(@Valid @RequestBody SendImageForm sendImageForm) {
+    public ResponseEntity<?> sendImages(@Valid @RequestBody SendImageForm sendImageForm) {
         Optional<UserGalleryModel> userGalleryModel = sendImageForm.convertToUserGalleryModel(userRepository);
         if (userGalleryModel.isEmpty())
             return ResponseEntity.notFound().build();
@@ -43,11 +42,19 @@ public class ImageController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/get_keys")
-    public ResponseEntity<?> GetAllPublicKeys() {
-        List<UserGalleryModel> usersData = userRepository.findAll();
-        return ResponseEntity.ok(PublicKeysIdDTO.convertList(usersData));
-    }
 
+    @Transactional
+    @PostMapping("/get_images")
+    public ResponseEntity<?> getImages(@Valid @RequestBody GetImagesForm form) {
+        Optional<UserGalleryModel> userGalleryModel = userRepository.findDistinctByUsername(form.getUsername());
+
+        if(userGalleryModel.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        Date createDate = userGalleryModel.get().getCreationDate();
+        Optional<List<ImageInformationModel>> image = imageInformationRepository.queryByCreationDateGreaterThanEqual(createDate);
+
+        return ResponseEntity.ok(image);
+    }
 
 }
