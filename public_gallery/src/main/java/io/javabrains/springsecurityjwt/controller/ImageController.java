@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/image")
+
 public class ImageController {
     @Autowired
     private UserRepository userRepository;
@@ -29,7 +31,7 @@ public class ImageController {
 
     @Transactional
     @PostMapping("/send_image")
-    public ResponseEntity<?> GetImage(@RequestBody SendImageForm sendImageForm) {
+    public ResponseEntity<?> GetImage(@Valid @RequestBody SendImageForm sendImageForm) {
         Optional<UserGalleryModel> userGalleryModel = sendImageForm.convertToUserGalleryModel(userRepository);
         if (userGalleryModel.isEmpty())
             return ResponseEntity.notFound().build();
@@ -43,8 +45,8 @@ public class ImageController {
 
     @GetMapping("/get_keys")
     public ResponseEntity<?> GetAllPublicKeys() {
-        List<UserGalleryModel> imageInformationModels = userRepository.findAll();
-        return ResponseEntity.ok(PublicKeysIdDTO.convertList(imageInformationModels));
+        List<UserGalleryModel> usersData = userRepository.findAll();
+        return ResponseEntity.ok(PublicKeysIdDTO.convertList(usersData));
     }
 
 

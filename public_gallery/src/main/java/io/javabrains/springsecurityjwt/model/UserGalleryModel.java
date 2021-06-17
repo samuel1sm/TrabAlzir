@@ -69,4 +69,15 @@ public class UserGalleryModel {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    @Override
+    public String toString() {
+        return "UserGalleryModel{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", creationDate=" + creationDate +
+                ", publicKey='" + publicKey + '\'' +
+                '}';
+    }
 }

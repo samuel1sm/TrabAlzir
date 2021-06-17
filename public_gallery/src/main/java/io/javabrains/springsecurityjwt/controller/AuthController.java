@@ -2,6 +2,7 @@ package io.javabrains.springsecurityjwt.controller;
 
 import io.javabrains.springsecurityjwt.MyUserDetailsService;
 import io.javabrains.springsecurityjwt.form.AuthenticationForm;
+import io.javabrains.springsecurityjwt.form.RegisterUserForm;
 import io.javabrains.springsecurityjwt.dto.AuthenticationDTO;
 import io.javabrains.springsecurityjwt.model.UserGalleryModel;
 import io.javabrains.springsecurityjwt.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
@@ -34,14 +36,14 @@ class AuthController {
 
 
     @PostMapping(value = "/authenticate")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationForm authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthenticationForm authenticationRequest) {
 
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            return ResponseEntity.notFound().build();
         }
 
 
@@ -54,7 +56,8 @@ class AuthController {
     }
 
     @PostMapping("/register")
-    private ResponseEntity<?> subscribeClient(@RequestBody AuthenticationForm form) {
+    private ResponseEntity<?> subscribeClient(@Valid @RequestBody RegisterUserForm form) {
+
         try {
             Optional<UserGalleryModel> user = userRepository.findByUsername(form.getUsername());
             if (user.isPresent())
