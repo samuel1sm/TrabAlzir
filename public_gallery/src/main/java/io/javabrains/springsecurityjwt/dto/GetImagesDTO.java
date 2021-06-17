@@ -10,7 +10,7 @@ public class GetImagesDTO {
     public GetImagesDTO(ImageInformationModel imageInformationModel, String id) {
 
         for (IdKey a: imageInformationModel.getAesKeys()) {
-            if(a.getId().equals(id)){
+            if(a.getIdUser().equals(id)){
                 aesKey = a.getKey();
                 break;
             }

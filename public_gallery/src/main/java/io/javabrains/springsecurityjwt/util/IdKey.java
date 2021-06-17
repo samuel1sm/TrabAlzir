@@ -6,17 +6,22 @@ import javax.validation.constraints.NotNull;
 public class IdKey {
     @NotNull
     @NotEmpty
-    public String id;
+    public String idUser;
     @NotNull
     @NotEmpty
     public String key;
 
-    public String getId() {
-        return id;
+    public IdKey(String idUser, String key) {
+        this.idUser = idUser;
+        this.key = key;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(String idUser) {
+        this.idUser = idUser;
     }
 
     public String getKey() {
@@ -25,10 +30,5 @@ public class IdKey {
 
     public void setKey(String key) {
         this.key = key;
-    }
-
-    public IdKey(String id, String publicKey) {
-        this.id = id;
-        this.key = publicKey;
     }
 }

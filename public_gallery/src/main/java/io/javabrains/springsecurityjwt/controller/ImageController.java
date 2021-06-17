@@ -56,8 +56,7 @@ public class ImageController {
         UserGalleryModel user = userGalleryModel.get();
 
         Date createDate = user.getCreationDate();
-        Optional<List<ImageInformationModel>> image = imageInformationRepository.
-                queryByCreationDateGreaterThanEqual(createDate);
+        Optional<List<ImageInformationModel>> image = imageInformationRepository.queryByCreationDateGreaterThanEqual(createDate);
 
         List<ImageInformationModel> images = image.get();
         List<GetImagesDTO> items = images.stream().map(value ->
