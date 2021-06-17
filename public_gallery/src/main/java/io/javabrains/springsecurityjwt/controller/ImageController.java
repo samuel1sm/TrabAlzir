@@ -1,12 +1,15 @@
 package io.javabrains.springsecurityjwt.controller;
 
+import io.javabrains.springsecurityjwt.dto.GetImagesDTO;
 import io.javabrains.springsecurityjwt.form.GetImagesForm;
 import io.javabrains.springsecurityjwt.form.SendImageForm;
 import io.javabrains.springsecurityjwt.model.ImageInformationModel;
 import io.javabrains.springsecurityjwt.model.UserGalleryModel;
 import io.javabrains.springsecurityjwt.repository.ImageInformationRepository;
 import io.javabrains.springsecurityjwt.repository.UserRepository;
+import io.javabrains.springsecurityjwt.util.IdKey;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/image")
@@ -47,14 +51,20 @@ public class ImageController {
     @PostMapping("/get_images")
     public ResponseEntity<?> getImages(@Valid @RequestBody GetImagesForm form) {
         Optional<UserGalleryModel> userGalleryModel = userRepository.findDistinctByUsername(form.getUsername());
+        if (userGalleryModel.isEmpty())
+            return ResponseEntity.ok(new IdKey[]{});
+        UserGalleryModel user = userGalleryModel.get();
 
-        if(userGalleryModel.isEmpty())
-            return ResponseEntity.notFound().build();
+        Date createDate = user.getCreationDate();
+        Optional<List<ImageInformationModel>> image = imageInformationRepository.
+                queryByCreationDateGreaterThanEqual(createDate);
 
-        Date createDate = userGalleryModel.get().getCreationDate();
-        Optional<List<ImageInformationModel>> image = imageInformationRepository.queryByCreationDateGreaterThanEqual(createDate);
+        List<ImageInformationModel> images = image.get();
+        List<GetImagesDTO> items = images.stream().map(value ->
+                new GetImagesDTO(value, user.getId())).collect(Collectors.toList());
 
-        return ResponseEntity.ok(image);
+
+        return ResponseEntity.ok(items);
     }
 
 }

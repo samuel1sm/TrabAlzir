@@ -9,7 +9,7 @@ public class IdKey {
     public String id;
     @NotNull
     @NotEmpty
-    public String publicKey;
+    public String key;
 
     public String getId() {
         return id;
@@ -19,16 +19,16 @@ public class IdKey {
         this.id = id;
     }
 
-    public String getPublicKey() {
-        return publicKey;
+    public String getKey() {
+        return key;
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public IdKey(String id, String publicKey) {
         this.id = id;
-        this.publicKey = publicKey;
+        this.key = publicKey;
     }
 }
